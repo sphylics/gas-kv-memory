@@ -83,13 +83,13 @@ Base URL: `https://memory.math-u-t.workers.dev/v1/zone`
 
 | メソッド | パス | 説明 |
 |---------|------|------|
-| GET | /get | 単一の値を取得 |
+| POST | /get | 単一の値を取得 |
 | POST | /set | 単一の値を保存 |
 | DELETE | /delete | 単一のキーを削除 |
-| GET | /exists | キーの存在確認 |
-| GET | /mget | 複数の値を取得 |
+| POST | /exists | キーの存在確認 |
+| POST | /mget | 複数の値を取得 |
 | POST | /mset | 複数の値を保存 |
-| GET | /keys | 全キーと値を取得 |
+| POST | /keys | 全キーと値を取得 |
 | DELETE | /mdelete | 複数のキーを削除 |
 
 ## Google Apps Scriptでの使用例
@@ -121,7 +121,7 @@ function setMemory(key, value) {
 
 // 値を取得
 function getMemory(key) {
-  return callMemoryAPI('/get', 'get', {
+  return callMemoryAPI('/get', 'post', {
     key: key,
     memory: 'EXAMPLE',
     token: 'your-api-token'

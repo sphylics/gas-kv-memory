@@ -47,9 +47,9 @@ function getMemoryNamespace(env: Env, memoryName: string): KVNamespace | null {
 const zone = new Hono<{ Bindings: Env }>();
 
 /**
- * GET /get - 単一の値を取得
+ * POST /get - 単一の値を取得
  */
-zone.get('/get', async (c) => {
+zone.post('/get', async (c) => {
   try {
     const body = await c.req.json<GetRequest>();
 
@@ -132,9 +132,9 @@ zone.delete('/delete', async (c) => {
 });
 
 /**
- * GET /exists - キーの存在確認
+ * POST /exists - キーの存在確認
  */
-zone.get('/exists', async (c) => {
+zone.post('/exists', async (c) => {
   try {
     const body = await c.req.json<ExistsRequest>();
 
@@ -159,9 +159,9 @@ zone.get('/exists', async (c) => {
 });
 
 /**
- * GET /mget - 複数の値を取得
+ * POST /mget - 複数の値を取得
  */
-zone.get('/mget', async (c) => {
+zone.post('/mget', async (c) => {
   try {
     const body = await c.req.json<MGetRequest>();
 
@@ -222,9 +222,9 @@ zone.post('/mset', async (c) => {
 });
 
 /**
- * GET /keys - 全キーと値を取得
+ * POST /keys - 全キーと値を取得
  */
-zone.get('/keys', async (c) => {
+zone.post('/keys', async (c) => {
   try {
     const body = await c.req.json<KeysRequest>();
 

@@ -57,7 +57,7 @@ function callMemoryAPI_(endpoint, method, payload) {
  * @returns {string|null} 値
  */
 function getValue(key, memory) {
-  const result = callMemoryAPI_('/get', 'get', {
+  const result = callMemoryAPI_('/get', 'post', {
     key: key,
     memory: memory || MEMORY_API.DEFAULT_MEMORY
   });
@@ -97,7 +97,7 @@ function deleteKey(key, memory) {
  * @returns {boolean} 存在する場合true
  */
 function existsKey(key, memory) {
-  const result = callMemoryAPI_('/exists', 'get', {
+  const result = callMemoryAPI_('/exists', 'post', {
     key: key,
     memory: memory || MEMORY_API.DEFAULT_MEMORY
   });
@@ -115,7 +115,7 @@ function existsKey(key, memory) {
  * @returns {Object} キーと値のオブジェクト
  */
 function getMultiple(keys, memory) {
-  const result = callMemoryAPI_('/mget', 'get', {
+  const result = callMemoryAPI_('/mget', 'post', {
     key: keys,
     memory: memory || MEMORY_API.DEFAULT_MEMORY
   });
@@ -140,7 +140,7 @@ function setMultiple(keyValues, memory) {
  * @returns {Object} 全キーと値のオブジェクト
  */
 function getAllKeys(memory) {
-  const result = callMemoryAPI_('/keys', 'get', {
+  const result = callMemoryAPI_('/keys', 'post', {
     memory: memory || MEMORY_API.DEFAULT_MEMORY
   });
   return result.content;
