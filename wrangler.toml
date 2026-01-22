@@ -1,0 +1,19 @@
+name = "gas-memory-kv"
+main = "src/index.ts"
+compatibility_date = "2024-08-06"
+
+# KV Namespace bindings
+# NOTE: KV namespace IDは実際のCloudflareダッシュボードで作成後に設定してください
+#
+# [[kv_namespaces]]
+# binding = "API_TOKEN"
+# id = "your-api-token-namespace-id"
+#
+# [[kv_namespaces]]
+# binding = "MEMORY_LIST"
+# id = "your-memory-list-namespace-id"
+#
+# 動的メモリネームスペースの例:
+# [[kv_namespaces]]
+# binding = "EXAMPLE_MEMORY"
+# id = "your-example-memory-namespace-id"
