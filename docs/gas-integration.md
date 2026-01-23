@@ -13,7 +13,7 @@ gas-kv-memoryをGoogle Apps Script (GAS)から使用する方法を説明しま�
  * gas-kv-memory API設定
  */
 const MEMORY_API = {
-  BASE_URL: 'https://memory.math-u-t.workers.dev/v1/zone',
+  BASE_URL: 'https://memory.sphylics.workers.dev/v1/zone',
   TOKEN: 'your-api-token',  // 実際のトークンに置き換え
   DEFAULT_MEMORY: 'MAIN'     // デフォルトのメモリ名
 };

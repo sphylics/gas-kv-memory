@@ -4,29 +4,36 @@ gas-kv-memoryのシステムアーキテクチャを説明します。
 
 ## システム概要
 
-```
-┌─────────────────────┐     HTTPS      ┌─────────────────────────────┐
-│  Google Apps Script │ ─────────────> │    Cloudflare Workers       │
-│    (クライアント)    │               │      (Hono.js API)          │
-└─────────────────────┘               └──────────────┬──────────────┘
-                                                      │
-                                                      │ KV API
-                                                      ▼
-                                      ┌─────────────────────────────┐
-                                      │     Cloudflare KV           │
-                                      │  ┌─────────────────────┐    │
-                                      │  │ API_TOKEN           │    │
-                                      │  │ (認証トークン管理)   │    │
-                                      │  └─────────────────────┘    │
-                                      │  ┌─────────────────────┐    │
-                                      │  │ MEMORY_LIST         │    │
-                                      │  │ (メモリ一覧管理)     │    │
-                                      │  └─────────────────────┘    │
-                                      │  ┌─────────────────────┐    │
-                                      │  │ {NAME}_MEMORY       │    │
-                                      │  │ (ユーザーデータ)     │    │
-                                      │  └─────────────────────┘    │
-                                      └─────────────────────────────┘
+```marmaid
+graph TD
+    %% クライアント層
+    subgraph Client ["Google Apps Script (クライアント)"]
+        GAS["GAS (fetch)"]
+    end
+
+    %% API層
+    subgraph Workers ["Cloudflare Workers"]
+        Hono["Hono.js API"]
+    end
+
+    %% ストレージ層
+    subgraph KV ["Cloudflare KV (Storage)"]
+        direction TB
+        Token["API_TOKEN<br/>(認証トークン管理)"]
+        List["MEMORY_LIST<br/>(メモリ一覧管理)"]
+        UserData["{NAME}_MEMORY<br/>(ユーザーデータ)"]
+    end
+
+    %% 接続関係
+    GAS -- "HTTPS (JSON)" --> Hono
+    Hono -- "KV API (Read/Write)" --> Token
+    Hono -- "KV API (Read/Write)" --> List
+    Hono -- "KV API (Read/Write)" --> UserData
+
+    %% スタイル定義
+    style Client fill:#fdf,stroke:#333
+    style Workers fill:#f96,stroke:#333,color:#fff
+    style KV fill:#eee,stroke:#333
 ```
 
 ## コンポーネント
@@ -84,35 +91,34 @@ Value: "{\"name\":\"John\",\"age\":30}"
 
 ## リクエストフロー
 
-```
-1. クライアントがリクエスト送信
-   POST /v1/zone/set
-   Body: { key, value, memory, token }
-           │
-           ▼
-2. Cloudflare Workersがリクエスト受信
-   - JSONボディをパース
-   - トークン抽出
-           │
-           ▼
-3. 認証チェック
-   API_TOKEN.get(token)
-   - null → 401 Unauthorized
-   - 存在 → 続行
-           │
-           ▼
-4. メモリNamespace取得
-   env[`${memory}_MEMORY`]
-   - undefined → 404 Not Found
-   - 存在 → 続行
-           │
-           ▼
-5. KV操作実行
-   kv.put(key, value)
-           │
-           ▼
-6. レスポンス返却
-   { ok: true, status: "SUCCESS", ... }
+```marmaid
+sequenceDiagram
+    autonumber
+    participant GAS as Google Apps Script
+    participant Hono as Cloudflare Workers<br/>(Hono.js)
+    participant KV_Auth as KV: API_TOKEN
+    participant KV_Mem as KV: {NAME}_MEMORY
+
+    GAS->>Hono: POST /v1/zone/set<br/>{key, value, memory, token}
+    
+    rect rgb(240, 240, 240)
+    Note over Hono: 認証チェック
+    Hono->>KV_Auth: get(token)
+    KV_Auth-->>Hono: Token data / null
+    
+    alt token is null
+        Hono-->>GAS: 401 Unauthorized
+    else token is valid
+        Note over Hono: Namespace確認
+        alt memory Namespace undefined
+            Hono-->>GAS: 404 Not Found
+        else memory Namespace exists
+            Hono->>KV_Mem: put(key, value)
+            KV_Mem-->>Hono: success
+            Hono-->>GAS: 200 OK { ok: true, status: "SUCCESS" }
+        end
+    end
+    end
 ```
 
 ## ファイル構造

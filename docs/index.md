@@ -29,7 +29,7 @@ npm install
 npx wrangler login
 npx wrangler kv:namespace create "API_TOKEN"
 npx wrangler kv:namespace create "EXAMPLE_MEMORY"
-# wrangler.tomlにIDを設定
+# wrangler.jsonにIDを設定
 npx wrangler kv:key put --binding API_TOKEN "my-token" "active"
 npm run deploy
 ```
@@ -39,7 +39,7 @@ npm run deploy
 ```javascript
 function test() {
   const response = UrlFetchApp.fetch(
-    'https://memory.math-u-t.workers.dev/v1/zone/set',
+    'https://memory.sphylics.workers.dev/v1/zone/set',
     {
       method: 'post',
       contentType: 'application/json',

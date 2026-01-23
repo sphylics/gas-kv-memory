@@ -16,37 +16,47 @@ CloudflareダッシュボードまたはwranglerコマンドでKV Namespaceを�
 
 ```bash
 # API Token用
-wrangler kv:namespace create "API_TOKEN"
+wrangler kv namespace create "API_TOKEN"
 
 # Memory List用
-wrangler kv:namespace create "MEMORY_LIST"
+wrangler kv namespace create "MEMORY_LIST"
 
-# 実際のメモリネームスペース（例: EXAMPLE）
-wrangler kv:namespace create "EXAMPLE_MEMORY"
+# 実際のメモリネームスペース
+wrangler kv namespace create "EXAMPLE_MEMORY"
 ```
 
-### 3. wrangler.tomlの設定
+### 3. wrangler.jsonの設定
 
-`wrangler.toml`のコメントを外し、作成したKV NamespaceのIDを設定:
+`wrangler.json`のコメントを外し、作成したKV NamespaceのIDを設定:
 
-```toml
-[[kv_namespaces]]
-binding = "API_TOKEN"
-id = "your-api-token-namespace-id"
-
-[[kv_namespaces]]
-binding = "MEMORY_LIST"
-id = "your-memory-list-namespace-id"
-
-[[kv_namespaces]]
-binding = "EXAMPLE_MEMORY"
-id = "your-example-memory-namespace-id"
+```json
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "your-worker-name",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-01-23",
+  "kv_namespaces": [
+    {
+      "binding": "API_TOKEN",
+      "id": "YOUR_API_TOKEN-namespace-id"
+    },
+    {
+      "binding": "MEMORY_LIST",
+      "id": "your-memory-list-namespace-id"
+    },
+    {
+      "binding": "EXAMPLE_MEMORY",
+      "id": "your-example-memory-namespace-id"
+    }
+  ]
+}
 ```
 
 ### 4. APIトークンの登録
 
 ```bash
-wrangler kv:key put --binding API_TOKEN "your-secret-token" "active"
+# 基本的な書き方
+wrangler kv key put --binding API_TOKEN "your-secret-token" "active"
 ```
 
 ### 5. デプロイ
@@ -64,7 +74,7 @@ npm run typecheck # 型チェック
 
 ## API仕様
 
-Base URL: `https://memory.math-u-t.workers.dev/v1/zone`
+Base URL: `https://memory.sphylics.workers.dev/v1/zone`
 
 ### レスポンス形式
 
@@ -103,7 +113,7 @@ function callMemoryAPI(endpoint, method, payload) {
     'muteHttpExceptions': true
   };
   const response = UrlFetchApp.fetch(
-    'https://memory.math-u-t.workers.dev/v1/zone' + endpoint,
+    'https://memory.sphylics.workers.dev/v1/zone' + endpoint,
     options
   );
   return JSON.parse(response.getContentText());
@@ -115,7 +125,7 @@ function setMemory(key, value) {
     key: key,
     value: value,
     memory: 'EXAMPLE',
-    token: 'your-api-token'
+    token: 'YOUR_API_TOKEN'
   });
 }
 
@@ -124,7 +134,7 @@ function getMemory(key) {
   return callMemoryAPI('/get', 'post', {
     key: key,
     memory: 'EXAMPLE',
-    token: 'your-api-token'
+    token: 'YOUR_API_TOKEN'
   });
 }
 ```

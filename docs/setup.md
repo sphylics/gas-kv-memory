@@ -11,7 +11,7 @@ gas-kv-memoryのセットアップ手順を説明します。
 ## 1. プロジェクトのクローン
 
 ```bash
-git clone https://github.com/your-username/gas-kv-memory.git
+git clone https://github.com/sphylics/gas-kv-memory.git
 cd gas-kv-memory
 ```
 
@@ -24,6 +24,7 @@ npm install
 ## 3. Cloudflareへのログイン
 
 ```bash
+npm install -g wrangler
 npx wrangler login
 ```
 
@@ -35,56 +36,61 @@ npx wrangler login
 
 ```bash
 # APIトークン管理用
-npx wrangler kv:namespace create "API_TOKEN"
-# 出力例: { binding = "API_TOKEN", id = "xxxx-xxxx-xxxx" }
+npx wrangler kv namespace create "API_TOKEN"
 
 # メモリリスト管理用
-npx wrangler kv:namespace create "MEMORY_LIST"
-# 出力例: { binding = "MEMORY_LIST", id = "yyyy-yyyy-yyyy" }
+npx wrangler kv namespace create "MEMORY_LIST"
 ```
 
 ### メモリNamespace（必要に応じて追加）
 
 ```bash
 # 例: USERSというメモリを作成
-npx wrangler kv:namespace create "USERS_MEMORY"
-# 出力例: { binding = "USERS_MEMORY", id = "zzzz-zzzz-zzzz" }
+npx wrangler kv namespace create "USERS_MEMORY"
+
+# 出力例:
+{ binding = "USERS_MEMORY", id = "zzzz-zzzz-zzzz" }
 ```
 
-## 5. wrangler.tomlの設定
+## 5. wrangler.jsonの設定
 
-作成したNamespaceのIDを`wrangler.toml`に追加します：
+作成したNamespaceのIDを`wrangler.json`に追加します：
 
-```toml
-name = "gas-memory-kv"
-main = "src/index.ts"
-compatibility_date = "2024-08-06"
+```json
+{
+  "name": "gas-memory-kv",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-08-06",
+  "kv_namespaces": [
+    {
+      "binding": "API_TOKEN",
+      "id": "xxxx-xxxx-xxxx"
+    },
+    {
+      "binding": "MEMORY_LIST",
+      "id": "yyyy-yyyy-yyyy"
+    },
+    {
+      "binding": "USERS_MEMORY",
+      "id": "zzzz-zzzz-zzzz"
+    }
+  ]
+}
 
-[[kv_namespaces]]
-binding = "API_TOKEN"
-id = "xxxx-xxxx-xxxx"
-
-[[kv_namespaces]]
-binding = "MEMORY_LIST"
-id = "yyyy-yyyy-yyyy"
-
-[[kv_namespaces]]
-binding = "USERS_MEMORY"
-id = "zzzz-zzzz-zzzz"
 ```
 
 ## 6. APIトークンの登録
 
 ```bash
 # トークンを登録（値は任意の文字列）
-npx wrangler kv:key put --binding API_TOKEN "your-secret-api-token" "active"
+npx wrangler kv key put "active" "your-secret-api-token" --binding API_TOKEN
 ```
 
 複数のトークンを登録することも可能です：
 
 ```bash
-npx wrangler kv:key put --binding API_TOKEN "token-for-app-1" "active"
-npx wrangler kv:key put --binding API_TOKEN "token-for-app-2" "active"
+npx wrangler kv key put "active" "token-for-app-1" --binding API_TOKEN
+npx wrangler kv key put "active" "token-for-app-2" --binding API_TOKEN
 ```
 
 ## 7. ローカル開発
@@ -112,14 +118,14 @@ npm run deploy
 デプロイ後、以下のURLでアクセス可能になります：
 
 ```
-https://gas-memory-kv.<your-subdomain>.workers.dev/v1/zone
+https://memory.sphylics.workers.dev/v1/zone
 ```
 
 ## トラブルシューティング
 
 ### "Memory namespace not found" エラー
 
-- `wrangler.toml`にKV Namespaceのバインディングが正しく設定されているか確認
+- `wrangler.json`にKV Namespaceのバインディングが正しく設定されているか確認
 - バインディング名は `{MEMORY_NAME}_MEMORY` の形式である必要があります
 - デプロイ後は変更が反映されるまで数秒かかる場合があります
 
@@ -131,9 +137,9 @@ https://gas-memory-kv.<your-subdomain>.workers.dev/v1/zone
 ### KV Namespaceの確認
 
 ```bash
-# 登録済みのトークン一覧
-npx wrangler kv:key list --binding API_TOKEN
+# ローカル環境（開発中）
+npx wrangler kv key list --binding API_TOKEN
 
-# 特定のキーの値を確認
-npx wrangler kv:key get --binding API_TOKEN "your-token"
+# 本番環境（Cloudflare上）
+npx wrangler kv key list --binding API_TOKEN --remote
 ```
