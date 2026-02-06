@@ -118,7 +118,7 @@ npm run deploy
 デプロイ後、以下のURLでアクセス可能になります：
 
 ```
-https://memory.sphylics.workers.dev/v1/zone
+https://example.com/v1/zone
 ```
 
 ## トラブルシューティング

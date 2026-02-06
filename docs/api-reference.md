@@ -2,7 +2,7 @@
 
 ## 概要
 
-- **Base URL**: `https://memory.sphylics.workers.dev/v1/zone`
+- **Base URL**: `https://example.com/v1/zone`
 - **Content-Type**: `application/json`
 - **認証**: リクエストボディに `token` パラメータを含める
 

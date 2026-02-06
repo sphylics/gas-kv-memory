@@ -74,7 +74,7 @@ npm run typecheck # 型チェック
 
 ## API仕様
 
-Base URL: `https://memory.sphylics.workers.dev/v1/zone`
+Base URL: `https://example.com/v1/zone`
 
 ### レスポンス形式
 
@@ -113,7 +113,7 @@ function callMemoryAPI(endpoint, method, payload) {
     'muteHttpExceptions': true
   };
   const response = UrlFetchApp.fetch(
-    'https://memory.sphylics.workers.dev/v1/zone' + endpoint,
+    'https://example.com/v1/zone' + endpoint,
     options
   );
   return JSON.parse(response.getContentText());
