@@ -1,5 +1,11 @@
+/// <reference path="./google-apps-script.d.ts" />
+
 /**
  * gas-kv-memory API設定
+ * @typedef {Object} MemoryAPIConfig
+ * @property {string} BASE_URL - API base URL
+ * @property {string} TOKEN - API authentication token
+ * @property {string} DEFAULT_MEMORY - Default memory namespace
  */
 interface MemoryAPIConfig {
   BASE_URL: string;

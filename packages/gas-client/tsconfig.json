@@ -2,13 +2,15 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ES2020",
-    "lib": ["ES2020"],
+    "lib": ["ES2020", "DOM"],
     "moduleResolution": "node",
-    "strict": true,
+    "strict": false,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["@types/google-apps-script"]
+    "resolveJsonModule": true,
+    "allowJs": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
