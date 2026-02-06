@@ -4,7 +4,7 @@ gas-kv-memoryのシステムアーキテクチャを説明します。
 
 ## システム概要
 
-```marmaid
+```mermaid
 graph TD
     %% クライアント層
     subgraph Client ["Google Apps Script (クライアント)"]
@@ -91,7 +91,7 @@ Value: "{\"name\":\"John\",\"age\":30}"
 
 ## リクエストフロー
 
-```marmaid
+```mermaid
 sequenceDiagram
     autonumber
     participant GAS as Google Apps Script
