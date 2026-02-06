@@ -58,7 +58,7 @@ npx wrangler kv namespace create "USERS_MEMORY"
 
 ```json
 {
-  "name": "gas-memory-kv",
+  "name": "gas-kv-memory",
   "main": "src/index.ts",
   "compatibility_date": "2024-08-06",
   "kv_namespaces": [
@@ -76,7 +76,6 @@ npx wrangler kv namespace create "USERS_MEMORY"
     }
   ]
 }
-
 ```
 
 ## 6. APIトークンの登録

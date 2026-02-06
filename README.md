@@ -2,75 +2,87 @@
 
 GoogleAppsScriptで使用できる軽量な外部KVストレージ。Cloudflare Workers + KVを使用。
 
-## セットアップ
+## プロジェクト構成
 
-### 1. 依存関係のインストール
+このプロジェクトはモノレポ構成です：
+
+```
+packages/
+  ├── core/          # Cloudflare Workers API サーバー
+  └── gas-client/    # Google Apps Script クライアント
+docs/               # ドキュメント
+```
+
+## クイックスタート
+
+### 1. リポジトリをクローン
+
+```bash
+git clone <repository-url>
+cd gas-kv-memory
+```
+
+### 2. 依存関係のインストール
 
 ```bash
 npm install
 ```
 
-### 2. KV Namespaceの作成
+### 3. Core パッケージのセットアップ
 
-CloudflareダッシュボードまたはwranglerコマンドでKV Namespaceを作成:
+詳細は [packages/core/README.md](./packages/core/README.md) を参照してください。
 
-```bash
-# API Token用
-wrangler kv namespace create "API_TOKEN"
+- Cloudflare KV Namespaceの作成
+- wrangler.jsonの設定
+- APIトークンの登録
 
-# Memory List用
-wrangler kv namespace create "MEMORY_LIST"
+### 4. Gas Client パッケージのセットアップ
 
-# 実際のメモリネームスペース
-wrangler kv namespace create "EXAMPLE_MEMORY"
-```
+詳細は [packages/gas-client/README.md](./packages/gas-client/README.md) を参照してください。
 
-### 3. wrangler.jsonの設定
-
-`wrangler.json`のコメントを外し、作成したKV NamespaceのIDを設定:
-
-```json
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "your-worker-name",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-01-23",
-  "kv_namespaces": [
-    {
-      "binding": "API_TOKEN",
-      "id": "YOUR_API_TOKEN-namespace-id"
-    },
-    {
-      "binding": "MEMORY_LIST",
-      "id": "your-memory-list-namespace-id"
-    },
-    {
-      "binding": "EXAMPLE_MEMORY",
-      "id": "your-example-memory-namespace-id"
-    }
-  ]
-}
-```
-
-### 4. APIトークンの登録
+## 開発・デプロイ
 
 ```bash
-# 基本的な書き方
-wrangler kv key put --binding API_TOKEN "your-secret-token" "active"
-```
+# Core パッケージのローカル開発
+npm run dev
 
-### 5. デプロイ
-
-```bash
+# Core パッケージのデプロイ
 npm run deploy
+
+# 型チェック（全パッケージ）
+npm run typecheck
 ```
 
-## 開発
+## ドキュメント
 
-```bash
-npm run dev      # ローカル開発サーバー
-npm run typecheck # 型チェック
-```
+詳細なドキュメントは[docs](./docs)ディレクトリを参照してください：
+
+- [セットアップガイド](./docs/setup.md) - インストールからデプロイまで
+- [APIリファレンス](./docs/api-reference.md) - 全エンドポイントの詳細仕様
+- [GAS連携ガイド](./docs/gas-integration.md) - Google Apps Scriptでの使用方法
+- [アーキテクチャ](./docs/architecture.md) - システム設計と技術詳細
+
+## パッケージ
+
+### @gas-kv-memory/core
+
+Cloudflare Workers上で動作するKV API サーバー。
+
+- **言語**: TypeScript
+- **ランタイム**: Cloudflare Workers
+- **フレームワーク**: Hono
+
+詳細: [packages/core/README.md](./packages/core/README.md)
+
+### @gas-kv-memory/gas-client
+
+Google Apps Scriptから @gas-kv-memory/core を使用するためのクライアント。
+
+- **言語**: TypeScript
+- **ランタイム**: Google Apps Script
+- **機能**: 値の取得・保存、バッチ操作、キャッシング、エラーハンドリング
+
+詳細: [packages/gas-client/README.md](./packages/gas-client/README.md)
 
 ## API仕様
 
@@ -101,52 +113,6 @@ Base URL: `https://example.com/v1/zone`
 | POST | /mset | 複数の値を保存 |
 | POST | /keys | 全キーと値を取得 |
 | DELETE | /mdelete | 複数のキーを削除 |
-
-## Google Apps Scriptでの使用例
-
-```javascript
-function callMemoryAPI(endpoint, method, payload) {
-  const options = {
-    'method': method,
-    'contentType': 'application/json',
-    'payload': JSON.stringify(payload),
-    'muteHttpExceptions': true
-  };
-  const response = UrlFetchApp.fetch(
-    'https://example.com/v1/zone' + endpoint,
-    options
-  );
-  return JSON.parse(response.getContentText());
-}
-
-// 値を保存
-function setMemory(key, value) {
-  return callMemoryAPI('/set', 'post', {
-    key: key,
-    value: value,
-    memory: 'EXAMPLE',
-    token: 'YOUR_API_TOKEN'
-  });
-}
-
-// 値を取得
-function getMemory(key) {
-  return callMemoryAPI('/get', 'post', {
-    key: key,
-    memory: 'EXAMPLE',
-    token: 'YOUR_API_TOKEN'
-  });
-}
-```
-
-## ドキュメント
-
-詳細なドキュメントは[docs](./docs)ディレクトリを参照してください：
-
-- [セットアップガイド](./docs/setup.md) - インストールからデプロイまで
-- [APIリファレンス](./docs/api-reference.md) - 全エンドポイントの詳細仕様
-- [GAS連携ガイド](./docs/gas-integration.md) - Google Apps Scriptでの使用方法
-- [アーキテクチャ](./docs/architecture.md) - システム設計と技術詳細
 
 ## ライセンス
 
