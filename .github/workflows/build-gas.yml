@@ -1,0 +1,69 @@
+name: Build and Update GAS
+
+on:
+  push:
+    branches:
+      - main
+      - dev/**
+    paths:
+      - 'packages/gas-client/**'
+      - 'scripts/gas-build.py'
+      - '.github/workflows/build-gas.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-gas:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build GAS code
+        run: python3 scripts/gas-build.py
+
+      - name: Check if packages/gas-client/dist has changes
+        id: check_changes
+        run: |
+          git diff --quiet packages/gas-client/dist && echo "has_changes=false" >> $GITHUB_OUTPUT || echo "has_changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add packages/gas-client/dist/
+          git commit -m "chore: update packages/gas-client/dist from GAS source"
+          git push
+
+      - name: Log build output
+        if: always()
+        run: |
+          echo "Build summary:"
+          if [ -d "packages/gas-client/dist" ]; then
+            ls -lah packages/gas-client/dist/
+          else
+            echo "packages/gas-client/dist directory not found"
+          fi

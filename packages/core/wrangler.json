@@ -1,12 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "gas-kv-memory",
+  "name": "gas-kv-memory-core",
   "main": "src/index.ts",
-  "compatibility_date": "2024-08-06",
+  "compatibility_date": "2026-01-23",
   "kv_namespaces": [
     {
       "binding": "API_TOKEN",
-      "id": "your-api-token-namespace-id"
+      "id": "YOUR_API_TOKEN-namespace-id"
     },
     {
       "binding": "MEMORY_LIST",

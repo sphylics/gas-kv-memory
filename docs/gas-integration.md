@@ -2,18 +2,30 @@
 
 gas-kv-memoryをGoogle Apps Script (GAS)から使用する方法を説明します。
 
+## インストール
+
+gas-kv-memoryに含まれる `@gas-kv-memory/gas-client` パッケージを使用します：
+
+```bash
+cd packages/gas-client
+npm install
+npm run build  # GAS にコードをプッシュ
+```
+
+詳細は [gas-client README](../packages/gas-client/README.md) を参照してください。
+
 ## 基本的な使い方
 
 ### APIクライアント関数
 
-以下のコードをGASプロジェクトに追加します：
+以下のコードをGASプロジェクトに追加します（`@gas-kv-memory/gas-client` から import）：
 
 ```javascript
 /**
  * gas-kv-memory API設定
  */
 const MEMORY_API = {
-  BASE_URL: 'https://memory.sphylics.workers.dev/v1/zone',
+  BASE_URL: 'https://example.com/v1/zone',
   TOKEN: 'your-api-token',  // 実際のトークンに置き換え
   DEFAULT_MEMORY: 'MAIN'     // デフォルトのメモリ名
 };
@@ -47,22 +59,14 @@ function callMemoryAPI_(endpoint, method, payload) {
 }
 ```
 
+詳細な実装は [packages/gas-client/src/client.ts](../packages/gas-client/src/client.ts) を参照してください。
+
 ### 基本操作関数
 
-```javascript
-/**
- * 値を取得
- * @param {string} key - キー
- * @param {string} [memory] - メモリ名（省略時はデフォルト）
- * @returns {string|null} 値
- */
-function getValue(key, memory) {
-  const result = callMemoryAPI_('/get', 'post', {
-    key: key,
-    memory: memory || MEMORY_API.DEFAULT_MEMORY
-  });
-  return result.content.value;
-}
+`@gas-kv-memory/gas-client` から提供される関数を使用します。
+
+#### getValue(config, key, memory)
+値を取得
 
 /**
  * 値を保存
@@ -105,73 +109,27 @@ function existsKey(key, memory) {
 }
 ```
 
+詳細な実装は [packages/gas-client/src/client.ts](../packages/gas-client/src/client.ts) を参照してください。
+
 ### バッチ操作関数
 
-```javascript
-/**
- * 複数の値を一括取得
- * @param {string[]} keys - キーの配列
- * @param {string} [memory] - メモリ名
- * @returns {Object} キーと値のオブジェクト
- */
-function getMultiple(keys, memory) {
-  const result = callMemoryAPI_('/mget', 'post', {
-    key: keys,
-    memory: memory || MEMORY_API.DEFAULT_MEMORY
-  });
-  return result.content;
-}
-
-/**
- * 複数の値を一括保存
- * @param {Object} keyValues - キーと値のオブジェクト
- * @param {string} [memory] - メモリ名
- */
-function setMultiple(keyValues, memory) {
-  callMemoryAPI_('/mset', 'post', {
-    key: keyValues,
-    memory: memory || MEMORY_API.DEFAULT_MEMORY
-  });
-}
-
-/**
- * 全キーと値を取得
- * @param {string} [memory] - メモリ名
- * @returns {Object} 全キーと値のオブジェクト
- */
-function getAllKeys(memory) {
-  const result = callMemoryAPI_('/keys', 'post', {
-    memory: memory || MEMORY_API.DEFAULT_MEMORY
-  });
-  return result.content;
-}
-
-/**
- * 複数のキーを一括削除
- * @param {string[]} keys - キーの配列
- * @param {string} [memory] - メモリ名
- */
-function deleteMultiple(keys, memory) {
-  callMemoryAPI_('/mdelete', 'delete', {
-    value: keys,
-    memory: memory || MEMORY_API.DEFAULT_MEMORY
-  });
-}
-```
+`@gas-kv-memory/gas-client` から提供される関数：
 
 ## 使用例
+
+詳細な使用例は [packages/gas-client](../packages/gas-client) を参照してください。
 
 ### ユーザーデータの管理
 
 ```javascript
 // ユーザー情報を保存
 function saveUser(userId, userData) {
-  setValue(`user:${userId}`, JSON.stringify(userData), 'USERS');
+  setValue(MEMORY_API, `user:${userId}`, JSON.stringify(userData), 'USERS');
 }
 
 // ユーザー情報を取得
 function getUser(userId) {
-  const data = getValue(`user:${userId}`, 'USERS');
+  const data = getValue(MEMORY_API, `user:${userId}`, 'USERS');
   return data ? JSON.parse(data) : null;
 }
 
@@ -186,7 +144,7 @@ function testUserManagement() {
 
   // 取得
   const user = getUser('123');
-  Logger.log(user.name); // 山田太郎
+  console.log(user.name); // 山田太郎
 }
 ```
 
@@ -212,15 +170,15 @@ function syncSheetToKV() {
     keyValues[`record:${id}`] = JSON.stringify(record);
   }
 
-  setMultiple(keyValues, 'SHEET_DATA');
-  Logger.log(`${Object.keys(keyValues).length}件のレコードを同期しました`);
+  setMultiple(MEMORY_API, keyValues, 'SHEET_DATA');
+  console.log(`${Object.keys(keyValues).length}件のレコードを同期しました`);
 }
 
 /**
  * KVからスプレッドシートにデータを復元
  */
 function syncKVToSheet() {
-  const allData = getAllKeys('SHEET_DATA');
+  const allData = getAllKeys(MEMORY_API, 'SHEET_DATA');
   const sheet = SpreadsheetApp.getActiveSheet();
 
   // ヘッダー以外をクリア
@@ -248,82 +206,42 @@ GASのCacheServiceと組み合わせてパフォーマンスを向上：
 ```javascript
 /**
  * キャッシュ付きで値を取得
- * @param {string} key - キー
- * @param {number} [cacheTtl=300] - キャッシュの有効期限（秒）
- * @returns {string|null} 値
  */
 function getValueWithCache(key, cacheTtl) {
-  const cache = CacheService.getScriptCache();
-  const cacheKey = `kv:${key}`;
-
-  // キャッシュを確認
-  let value = cache.get(cacheKey);
-  if (value !== null) {
-    return value;
-  }
-
-  // KVから取得
-  value = getValue(key);
-  if (value !== null) {
-    cache.put(cacheKey, value, cacheTtl || 300);
-  }
-
-  return value;
+  return getValueWithCache(MEMORY_API, key, cacheTtl || 300);
 }
 
 /**
  * 値を保存（キャッシュも更新）
- * @param {string} key - キー
- * @param {string} value - 値
  */
 function setValueWithCache(key, value) {
-  const cache = CacheService.getScriptCache();
-  const cacheKey = `kv:${key}`;
-
-  // KVに保存
-  setValue(key, value);
-
-  // キャッシュを更新
-  cache.put(cacheKey, value, 300);
+  return setValueWithCache(MEMORY_API, key, value);
 }
 ```
 
+詳細な実装は [packages/gas-client/src/client.ts](../packages/gas-client/src/client.ts) を参照してください。
+
 ## エラーハンドリング
+
+`@gas-kv-memory/gas-client` で提供される関数：
 
 ```javascript
 /**
  * 安全にAPIを呼び出す
  */
 function safeGetValue(key, memory, defaultValue) {
-  try {
-    const value = getValue(key, memory);
-    return value !== null ? value : defaultValue;
-  } catch (e) {
-    Logger.log(`Error getting value for key ${key}: ${e.message}`);
-    return defaultValue;
-  }
+  return safeGetValue(MEMORY_API, key, memory, defaultValue);
 }
 
 /**
  * リトライ付きでAPIを呼び出す
  */
 function getValueWithRetry(key, memory, maxRetries) {
-  maxRetries = maxRetries || 3;
-  let lastError;
-
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return getValue(key, memory);
-    } catch (e) {
-      lastError = e;
-      Logger.log(`Retry ${i + 1}/${maxRetries}: ${e.message}`);
-      Utilities.sleep(1000 * Math.pow(2, i)); // 指数バックオフ
-    }
-  }
-
-  throw lastError;
+  return getValueWithRetry(MEMORY_API, key, memory, maxRetries || 3);
 }
 ```
+
+詳細な実装は [packages/gas-client/src/client.ts](../packages/gas-client/src/client.ts) を参照してください。
 
 ## 注意事項
 
@@ -341,4 +259,20 @@ function setApiToken(token) {
 function getApiToken() {
   return PropertiesService.getScriptProperties().getProperty('MEMORY_API_TOKEN');
 }
+
+// 使用例
+const MEMORY_API = {
+  BASE_URL: 'https://example.com/v1/zone',
+  TOKEN: getApiToken(),  // プロパティから取得
+  DEFAULT_MEMORY: 'MAIN'
+};
 ```
+
+## パッケージ構成
+
+このリポジトリは monorepo 構成で、以下のパッケージを含みます：
+
+- [packages/core](../packages/core) - Cloudflare Workers API サーバー
+- [packages/gas-client](../packages/gas-client) - Google Apps Script クライアント
+
+詳細は各パッケージの README を参照してください。

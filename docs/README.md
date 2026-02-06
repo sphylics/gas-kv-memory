@@ -39,7 +39,7 @@ npm run deploy
 ```javascript
 function test() {
   const response = UrlFetchApp.fetch(
-    'https://memory.sphylics.workers.dev/v1/zone/set',
+    'https://example.com/v1/zone/set',
     {
       method: 'post',
       contentType: 'application/json',
