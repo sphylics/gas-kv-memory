@@ -18,7 +18,7 @@ docs/               # ドキュメント
 ### 1. リポジトリをクローン
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/sphylics/gas-kv-memory.git
 cd gas-kv-memory
 ```
 
