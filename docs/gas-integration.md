@@ -9,7 +9,7 @@ gas-kv-memoryに含まれる `@gas-kv-memory/gas-client` パッケージを使�
 ```bash
 cd packages/gas-client
 npm install
-npm run build  # GAS にコードをプッシュ
+npm run build # gasに直接アップロードできるjs形式に変換しdistに入る
 ```
 
 詳細は [gas-client README](../packages/gas-client/README.md) を参照してください。
