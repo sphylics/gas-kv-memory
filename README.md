@@ -42,6 +42,12 @@ npm install
 
 ## 開発・デプロイ
 
+テスト用ディレクトリに移動
+
+```bash
+cd packages/testing-codes
+```
+
 ```bash
 # Core パッケージのローカル開発
 npm run dev
