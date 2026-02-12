@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Google Apps Script client for gas-kv-memory",
   "type": "module",
-  "main": "src/client.ts",
+  "main": "dist/client.js",
   "scripts": {
-    "build": "clasp push",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "help": "echo \"Available commands: npm run build, npm run typecheck, npm run push\""
   },
   "devDependencies": {
     "@types/google-apps-script": "^1.0.83",

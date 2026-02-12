@@ -1,5 +1,3 @@
-/// <reference path="./google-apps-script.d.ts" />
-
 /**
  * gas-kv-memory API設定
  * @typedef {Object} MemoryAPIConfig

@@ -18,7 +18,7 @@ docs/               # ドキュメント
 ### 1. リポジトリをクローン
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/sphylics/gas-kv-memory.git
 cd gas-kv-memory
 ```
 
@@ -41,6 +41,12 @@ npm install
 詳細は [packages/gas-client/README.md](./packages/gas-client/README.md) を参照してください。
 
 ## 開発・デプロイ
+
+テスト用ディレクトリに移動
+
+```bash
+cd packages/testing-codes
+```
 
 ```bash
 # Core パッケージのローカル開発

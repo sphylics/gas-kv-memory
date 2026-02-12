@@ -62,9 +62,20 @@ const value = safeGetValue(MEMORY_API, 'key', undefined, 'default');
 const value = getValueWithRetry(MEMORY_API, 'key', undefined, 3);
 ```
 
-## ドキュメント
+## セットアップ
 
-詳細は以下を参照：
+gitを使用してコードをcloneした後、移動、依存関係をインストールします。
 
-- [GAS連携ガイド](../../docs/gas-integration.md)
-- [プロジェクトREADME](../../README.md)
+```bash
+git clone https://github.com/sphylics/gas-kv-memory.git
+cd gas-kv-memory/packages/gas-client
+npm install
+```
+
+gasで使用可能なjsに整形します。この際`dist`ディレクトリに追加されます。
+
+```
+npm run build
+```
+
+完成したコードは手動もしくはclaspを使用して同期し、gas上でデプロイしてください。
