@@ -57,7 +57,7 @@ function getValue(config: MemoryAPIConfig, key: string, memory?: string): string
     key,
     memory: memory || config.DEFAULT_MEMORY,
   });
-  return (result.content as any)?.value || null;
+  return (result.content as any)?.value ?? null;
 }
 
 /**
