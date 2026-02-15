@@ -206,18 +206,23 @@ GASのCacheServiceと組み合わせてパフォーマンスを向上：
 ```javascript
 /**
  * キャッシュ付きで値を取得
+ * memory を省略した場合は DEFAULT_MEMORY が使われる
  */
-function getValueWithCache(key, cacheTtl) {
-  return getValueWithCache(MEMORY_API, key, cacheTtl || 300);
+function getValueWithCacheSafe(key, memory, cacheTtl) {
+  return getValueWithCache(MEMORY_API, key, cacheTtl || 300, memory);
 }
 
 /**
  * 値を保存（キャッシュも更新）
  */
-function setValueWithCache(key, value) {
-  return setValueWithCache(MEMORY_API, key, value);
+function setValueWithCacheSafe(key, value, memory) {
+  return setValueWithCache(MEMORY_API, key, value, memory);
 }
 ```
+
+> [!IMPORTANT]
+> キャッシュキーは `kv:${memory}:${key}` 形式です。`memory` を分離しないと、同名キーが別メモリ間で衝突して誤読するため、
+> マルチメモリ運用では `memory` を必ず渡してください。
 
 詳細な実装は [packages/gas-client/src/client.ts](../packages/gas-client/src/client.ts) を参照してください。
 

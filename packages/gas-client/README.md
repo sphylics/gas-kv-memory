@@ -34,8 +34,12 @@ const MEMORY_API = {
 
 - `safeGetValue(config, key, memory, defaultValue)` - 安全にAPIを呼び出す
 - `getValueWithRetry(config, key, memory, maxRetries)` - リトライ付きで呼び出す
-- `getValueWithCache(config, key, cacheTtl)` - キャッシュ付きで取得
-- `setValueWithCache(config, key, value)` - キャッシュ付きで保存
+- `getValueWithCache(config, key, cacheTtl, memory)` - キャッシュ付きで取得
+- `setValueWithCache(config, key, value, memory)` - キャッシュ付きで保存
+
+> [!IMPORTANT]
+> `getValueWithCache` / `setValueWithCache` はキャッシュキーに `memory` を含めます。
+> 同じ `key` を複数メモリ（例: `USERS`, `SESSIONS`）で使う場合は、必ず `memory` を明示してください。
 
 ## 使用例
 
