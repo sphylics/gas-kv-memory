@@ -216,9 +216,15 @@ function getValueWithRetry(
  * @param cacheTtl - キャッシュの有効期限（秒）
  * @returns 値
  */
-function getValueWithCache(config: MemoryAPIConfig, key: string, cacheTtl: number = 300): string | null {
+function getValueWithCache(
+  config: MemoryAPIConfig,
+  key: string,
+  cacheTtl: number = 300,
+  memory?: string
+): string | null {
   const cache = CacheService.getScriptCache();
-  const cacheKey = `kv:${key}`;
+  const targetMemory = memory || config.DEFAULT_MEMORY;
+  const cacheKey = `kv:${targetMemory}:${key}`;
 
   // キャッシュを確認
   let value = cache.get(cacheKey);
@@ -227,7 +233,7 @@ function getValueWithCache(config: MemoryAPIConfig, key: string, cacheTtl: numbe
   }
 
   // KVから取得
-  value = getValue(config, key);
+  value = getValue(config, key, targetMemory);
   if (value !== null) {
     cache.put(cacheKey, value, cacheTtl);
   }
@@ -241,12 +247,13 @@ function getValueWithCache(config: MemoryAPIConfig, key: string, cacheTtl: numbe
  * @param key - キー
  * @param value - 値
  */
-function setValueWithCache(config: MemoryAPIConfig, key: string, value: string): void {
+function setValueWithCache(config: MemoryAPIConfig, key: string, value: string, memory?: string): void {
   const cache = CacheService.getScriptCache();
-  const cacheKey = `kv:${key}`;
+  const targetMemory = memory || config.DEFAULT_MEMORY;
+  const cacheKey = `kv:${targetMemory}:${key}`;
 
   // KVに保存
-  setValue(config, key, value);
+  setValue(config, key, value, targetMemory);
 
   // キャッシュを更新
   cache.put(cacheKey, value, 300);
