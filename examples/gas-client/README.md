@@ -13,7 +13,7 @@ npm run build
 `npm run build` で `dist/client.js` が生成されます。
 
 - 手動: `dist/client.js` を GAS プロジェクトに貼り付け
-- 自動: `npm run deploy`（`clasp push`）
+- 自動: `npm run deploy`(`clasp push`)
 
 ## 設定例
 

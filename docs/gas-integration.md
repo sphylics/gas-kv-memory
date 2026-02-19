@@ -15,9 +15,9 @@ npm run build
 ## 2. GAS へ反映する方法
 
 - 手動反映: `dist/client.js` を Apps Script エディタに貼り付ける
-- clasp 反映: `npm run deploy` を実行する（内部で `clasp push`）
+- clasp 反映: `npm run deploy` を実行する(内部で `clasp push`)
 
-> `npm run deploy` を使うには `examples/gas-client` で clasp 設定（`.clasp.json`）が必要です。
+> `npm run deploy` を使うには `examples/gas-client` で clasp 設定(`.clasp.json`)が必要です。
 
 ## 3. 最低限の設定例
 

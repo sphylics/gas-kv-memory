@@ -1,7 +1,7 @@
 {
   "name": "gas-kv-memory",
   "version": "1.0.0",
-  "description": "GoogleAppsScriptで使用できる軽量な外部KVストレージ（Cloudflare Workers + KV）",
+  "description": "GoogleAppsScriptで使用できる軽量な外部KVストレージ(Cloudflare Workers + KV)",
   "private": true,
   "type": "module",
   "workspaces": [

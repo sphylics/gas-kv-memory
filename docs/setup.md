@@ -4,7 +4,7 @@
 
 - Node.js 18+
 - Cloudflare アカウント
-- `wrangler` が使えること（`npx wrangler`）
+- `wrangler` が使えること(`npx wrangler`)
 
 ## 1. インストール
 
@@ -34,7 +34,7 @@ npx wrangler kv namespace create "USERS_MEMORY"
 
 - `API_TOKEN`
 - `MEMORY_LIST`
-- `USERS_MEMORY`（任意の `{MEMORY_NAME}_MEMORY`）
+- `USERS_MEMORY`(任意の `{MEMORY_NAME}_MEMORY`)
 
 ## 5. APIトークン登録
 

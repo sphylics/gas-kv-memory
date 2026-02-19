@@ -244,7 +244,7 @@ zone.post('/keys', async (c) => {
     const result: Record<string, string | null> = {};
     let cursor: string | undefined;
 
-    // KVの全キーを取得（ページネーション対応）
+    // KVの全キーを取得(ページネーション対応)
     do {
       const list = await kv.list({ cursor });
       await Promise.all(

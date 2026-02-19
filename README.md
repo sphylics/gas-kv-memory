@@ -6,7 +6,7 @@ Google Apps Script から利用できる外部 KV ストレージです。バッ
 
 ```text
 packages/core         # 本体: Cloudflare Workers API
-examples/gas-client   # 参考実装: GAS用サンプルコード（example）
+examples/gas-client   # 参考実装: GAS用サンプルコード(example)
 docs                  # ドキュメント
 ```
 
@@ -36,7 +36,9 @@ npm run build
 `npm run build` で `dist` が生成されます。
 
 - 手動: `dist/client.js` を GAS プロジェクトへ貼り付け
-- 自動: `npm run deploy`（`clasp push` を実行）
+- 自動: `npm run deploy`(`clasp push` を実行)
+
+`npm run deploy`を行う場合は事前にclaspにログインしてください。
 
 ## ドキュメント
 
