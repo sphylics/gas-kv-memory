@@ -1,0 +1,19 @@
+{
+  "name": "gas-kv-memory",
+  "version": "1.0.0",
+  "description": "GoogleAppsScriptで使用できる軽量な外部KVストレージ(Cloudflare Workers + KV)",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "examples/gas-client"
+  ],
+  "scripts": {
+    "dev": "npm --workspace=packages/core run dev",
+    "deploy": "npm --workspace=packages/core run deploy",
+    "typecheck": "npm --workspace=packages/core run typecheck && npm --workspace=examples/gas-client run typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

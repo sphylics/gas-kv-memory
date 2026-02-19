@@ -14,7 +14,7 @@ interface MemoryAPIConfig {
 /**
  * APIリクエストを送信
  * @param config - API設定
- * @param endpoint - エンドポイント（例: '/get'）
+ * @param endpoint - エンドポイント(例: '/get')
  * @param method - HTTPメソッド
  * @param payload - リクエストボディ
  * @returns APIレスポンス
@@ -213,7 +213,7 @@ function getValueWithRetry(
  * キャッシュ付きで値を取得
  * @param config - API設定
  * @param key - キー
- * @param cacheTtl - キャッシュの有効期限（秒）
+ * @param cacheTtl - キャッシュの有効期限(秒)
  * @returns 値
  */
 function getValueWithCache(
@@ -242,7 +242,7 @@ function getValueWithCache(
 }
 
 /**
- * 値を保存（キャッシュも更新）
+ * 値を保存(キャッシュも更新)
  * @param config - API設定
  * @param key - キー
  * @param value - 値

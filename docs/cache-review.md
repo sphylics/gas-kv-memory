@@ -1,16 +1,16 @@
-# GAS クライアントの激辛レビュー（キャッシュ層）
+# GAS クライアントの激辛レビュー(キャッシュ層)
 
 ## 対象
-- `packages/gas-client/src/client.ts`
+- `examples/gas-client/src/client.ts`
 - `getValueWithCache`
 - `setValueWithCache`
 
-## 指摘（重大）
+## 指摘(重大)
 
 ### 1. メモリ境界を無視したキャッシュキー設計
 
 従来実装は `kv:${key}` をキャッシュキーとして使用していました。
-この設計では `USERS` と `SESSIONS` のように別メモリに同じキー名（例: `user:123`）が存在すると、
+この設計では `USERS` と `SESSIONS` のように別メモリに同じキー名(例: `user:123`)が存在すると、
 先に取得・保存された値が後続アクセスに混入し、別メモリのデータを誤って返す可能性があります。
 
 - 影響: データ整合性の破壊

@@ -13,7 +13,7 @@ export function success<T>(content: T): ApiResponse<T> {
 }
 
 /**
- * NOOP（期待される失敗、継続）レスポンスを生成
+ * NOOP(期待される失敗、継続)レスポンスを生成
  */
 export function noop<T>(content: T): ApiResponse<T> {
   return {
