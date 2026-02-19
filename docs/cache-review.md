@@ -1,7 +1,7 @@
 # GAS クライアントの激辛レビュー（キャッシュ層）
 
 ## 対象
-- `packages/gas-client/src/client.ts`
+- `examples/gas-client/src/client.ts`
 - `getValueWithCache`
 - `setValueWithCache`
 

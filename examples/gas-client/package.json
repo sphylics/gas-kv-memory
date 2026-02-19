@@ -1,0 +1,17 @@
+{
+  "name": "@gas-kv-memory/gas-client",
+  "version": "1.0.0",
+  "description": "Example Google Apps Script client for gas-kv-memory",
+  "type": "module",
+  "main": "dist/client.js",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "npm run build && clasp push",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2",
+    "@types/google-apps-script": "^1.0.83",
+    "typescript": "^5.5.0"
+  }
+}
